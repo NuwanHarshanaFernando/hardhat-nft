@@ -33,3 +33,13 @@ Create BasicNft.test.js inside test/unit folder
 ```
 hh test
 ```
+
+## 2. Random IPFS NFT
+
+Create RandomIpfsNft.sol inside contracts folder
+
+Install chainlink/contracts
+
+```
+    yarn add --dev @chainlink/contracts
+```
