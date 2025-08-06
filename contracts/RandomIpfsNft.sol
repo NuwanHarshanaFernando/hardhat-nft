@@ -17,6 +17,16 @@ contract RandomIpfsNft is VRFConsumerBaseV2Plus, ERC721 {
     // users have to pay to mint NFT
     // the owner of the contract can withdraw the ETH
 
+    // Errors
+    error RandomIpfsNft__RangeOutOfBounds();
+
+    // Type Declaration
+    enum Breed {
+        PUG,
+        SHIBA_INU,
+        BERNARD
+    }
+
     /* State Variables */
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
@@ -33,6 +43,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2Plus, ERC721 {
 
     // NFT Variables
     uint256 public s_tokenCounter;
+    uint256 internal constant MAX_CHANCE_VALUE = 100;
 
     constructor(
         uint256 entranceFee,
@@ -80,7 +91,32 @@ contract RandomIpfsNft is VRFConsumerBaseV2Plus, ERC721 {
     ) internal override {
         address dogOwner = s_requestIdToSender[requestId];
         uint256 newTokenId = s_tokenCounter;
+
+        uint256 moddedRng = randomWords[0] % MAX_CHANCE_VALUE; // We got number between 0 - 99
+        // 0 - 99
+        // 7 -> Pug
+        // 88 -> Bernard
+        // 45 -> Bernard
+        // 12 -> Shiba Inu
+
+        Breed dogBreed = getBreedFromModdedRng(moddedRng);
         _safeMint(dogOwner, newTokenId);
+    }
+
+    function getBreedFromModdedRng(uint256 moddedRng) public pure returns (Breed) {
+        uint256 cumulativeSum = 0;
+        uint256[3] memory chanceArray = getChanceArray();
+        for (uint256 i = 0; i < chanceArray.length; i++) {
+            if (moddedRng >= cumulativeSum && moddedRng < cumulativeSum + chanceArray[i]) {
+                return Breed(i);
+            }
+            cumulativeSum += chanceArray[i];
+        }
+        revert RandomIpfsNft__RangeOutOfBounds();
+    }
+
+    function getChanceArray() public pure returns (uint256[3] memory) {
+        return [10, 30, MAX_CHANCE_VALUE];
     }
 
     function tokenURI(uint256) public view override returns (string memory) {}

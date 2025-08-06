@@ -43,3 +43,19 @@ Install chainlink/contracts
 ```
     yarn add --dev @chainlink/contracts
 ```
+
+VRF Related Functions for Random Number Generation
+    -requestNft()
+    -fulfillRandomWords()
+
+NFT Related Functions 
+    -getChanceArray() -to get the different chances of the different dog breed
+    -getBreedFromModdedRng() 
+
+Create an enum for dog breeds    
+
+  enum Breed {
+        PUG,
+        SHIBA_INU,
+        BERNARD
+    }
