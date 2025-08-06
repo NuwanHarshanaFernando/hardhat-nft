@@ -120,4 +120,69 @@ Save pug.png, shiba-inu.png, bernard.png inside it
 
      1. With ourown IPFS node, https://docs.ipfs.io/
      2. Pinata https://www.pinata.cloud/
+     3. NFT Storage https://nft.storage/ (It has Filecoin network in the backend)
+
+ Create a function handleTokenUris() in 02-deploy-random-ipfs.js to handle upload images to pinata   
+
+   // We have to do 2 things 
+    // 1. Store the Image in IPFS
+    // 2. Store the metadata in IPFS
+
+ Create a file called "uploadToPinata.js" inside utils folder   
+
+Go to Pinata NodeJs SDK https://docs.pinata.cloud/frameworks/node-js
+
+Install pinata
+
+```
+$ yarn add --dev @pinata/sdk
+```
+
+Install path package
+
+```
+$ yarn add --dev path
+```
+Add this line to 02-deploy-random-ipfs.js
+await storeImages(imagesLocation)
+
+Create a test folder inside contracts folder
+Add VRFCoordinatorV2_5Mock here
+
+Then deploy 
+
+```
+$ hh deploy --tags randomipfs,mocks
+```
+
+We get the files as we console in uploadToPinata.js
+
+[ 'pug.png', 'shiba-inu.png', 'st-bernard.png' ]
+
+Create an API Key in Pinata with full access
+
+Copy API Key informations to .env
+
+Deploy again
+
+```
+$ hh deploy --tags randomipfs,mocks
+```
+
+Uploading to IPFS!
+
+Successfully pinned pug.png: CID QmSsYRx3LpDAb1GZQm7zZ1AuHZjfbPkD6J7s9r41xu1mf8
+Successfully pinned shiba-inu.png: CID QmYx6GsYAKnNzZ9A6NvEKV9nf1VaDzJrqDR23Y8YSkebLU
+Successfully pinned st-bernard.png: CID QmUPjADFGEKmfohdTaNcWhp7VGk26h5jXDA7v3VtTnTLcW
+
+
+Now go to Pinata, we can see the image files have been uploaded and each one has its own cid
+
+Copy the CID and open IPFS Desktop
+
+Go to import from and paste the CID and give the name
+
+Now you can access and preview through it.
+
+
 

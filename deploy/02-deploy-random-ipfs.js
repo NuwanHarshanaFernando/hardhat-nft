@@ -1,6 +1,9 @@
 const { network, ethers } = require("hardhat")
-const { developmentChains } = require("../helper-hardhat-config")
+const { developmentChains, networkConfig } = require("../helper-hardhat-config")
 const { verify } = require("../utils/verify")
+const { storeImages } = require("../utils/uploadToPinata")
+
+const imagesLocation = "./images/randomNft"
 
 const VRF_SUB_FUND_AMOUNT = ethers.parseEther("2") // 30 is super overkill, 2 would work
 
@@ -8,12 +11,16 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
     const chainId = network.config.chainId
+    let tokenUris
 
     // get the IPFS hashes of our images
+    if(process.env.UPLOAD_TO_PINATA == "true") {
+        tokenUris = await handleTokenUris()
+    }
 
-    // 1. With ourown IPFS node, https://docs.ipfs.io/
+    // 1. With our own IPFS node, https://docs.ipfs.io/
     // 2. Pinata https://www.pinata.cloud/
-
+    // 3. NFT Storage https://nft.storage/ (It has Filecoin network in the backend)
 
     let vrfCoordinatorV2Address, subscriptionId
 
@@ -59,16 +66,31 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
 
 log("--------------------------------------------------")
 
+await storeImages(imagesLocation)
+
   const gasLane = networkConfig[chainId]["gasLane"]
   const callbackGasLimit = networkConfig[chainId]["callbackGasLimit"]
   const mintFee = networkConfig[chainId]["mintFee"]
 
-    const args = [
-        vrfCoordinatorV2Address,
-         gasLane,
-          subscriptionId,
-           callbackGasLimit,
-          // tokenUris,
-           mintFee
-        ]
+    // const args = [
+    //     vrfCoordinatorV2Address,
+    //      gasLane,
+    //       subscriptionId,
+    //        callbackGasLimit,
+    //       // tokenUris,
+    //        mintFee
+    //     ]
 }
+
+async function handleTokenUris() {
+    tokenUris = []
+    // We have to do 2 things
+    // 1. Store the Image in IPFS
+    // 2. Store the metadata in IPFS
+
+
+
+    return tokenUris
+}
+
+module.exports.tags = ["all", "randomipfs", "main"]
