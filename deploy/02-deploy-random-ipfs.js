@@ -17,13 +17,19 @@ const metadataTemplate = {
   ]
 }
 
-const VRF_SUB_FUND_AMOUNT = ethers.parseEther("2") // 30 is super overkill, 2 would work
+const VRF_SUB_FUND_AMOUNT = ethers.parseEther("2") // 30 is super overkill, 2 would work (LINKS)
+
+let tokenUris = [
+   'ipfs://QmaVkBn2tKmjbhphU7eyztbvSQU5EXDdqRyXZtRhSGgJGo',
+  'ipfs://QmYQC5aGZu2PTH8XzbJrbDnvhj3gVs7ya33H9mqUNvST3d',
+  'ipfs://QmZYmH5iDbD6v3U2ixoVAjioSzvWJszDzYdbeCLquGSpVm',
+]
 
 module.exports = async function ({ getNamedAccounts, deployments }) {
     const { deploy, log } = deployments
     const { deployer } = await getNamedAccounts()
     const chainId = network.config.chainId
-    let tokenUris
+    
 
     // get the IPFS hashes of our images
     if(process.env.UPLOAD_TO_PINATA == "true") {
@@ -84,14 +90,26 @@ await storeImages(imagesLocation)
   const callbackGasLimit = networkConfig[chainId]["callbackGasLimit"]
   const mintFee = networkConfig[chainId]["mintFee"]
 
-    // const args = [
-    //     vrfCoordinatorV2Address,
-    //      gasLane,
-    //       subscriptionId,
-    //        callbackGasLimit,
-    //       // tokenUris,
-    //        mintFee
-    //     ]
+    const args = [
+        vrfCoordinatorV2Address,
+         gasLane,
+          subscriptionId,
+           callbackGasLimit,
+           tokenUris,
+           mintFee
+        ]
+
+        const randomIpfsNft = await deploy("RandomIpfsNft", {
+          from: deployer,
+          args: args,
+          log: true,
+          waitConfirmations: network.config.blockConfirmations || 1
+        })
+        log("----------------------------------------------------")
+         if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+        log("Verifying...")
+        await verify(randomIpfsNft.address, args)
+    }
 }
 
 async function handleTokenUris() {

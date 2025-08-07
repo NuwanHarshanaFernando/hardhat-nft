@@ -209,8 +209,17 @@ Token URIs Uploaded! They are:
 
 We can see the list of CIDs in Pinata
 
+Now set tokenUris in 02-deploy-random-ipfs.js
+and set UPLOAD_TO_PINATA=false in .env
 
+let tokenUris = [
+  'ipfs://QmaVkBn2tKmjbhphU7eyztbvSQU5EXDdqRyXZtRhSGgJGo',
+  'ipfs://QmYQC5aGZu2PTH8XzbJrbDnvhj3gVs7ya33H9mqUNvST3d',
+  'ipfs://QmZYmH5iDbD6v3U2ixoVAjioSzvWJszDzYdbeCLquGSpVm',
+]
 
+## Testing
+Create randomIpfsNft.test.js in test/unit
 
 
 
